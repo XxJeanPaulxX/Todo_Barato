@@ -13,17 +13,6 @@ class MainActivity : AppCompatActivity() {
         val dbHelper = DatabaseHelper(this)
         val db = dbHelper.getDatabase()
 
-        // --- datos de prueba (temporal) ---
-        db.execSQL(
-            "INSERT INTO Ventas (codigo, nombre, precio, cantidad, tipo, fecha_de_venta) VALUES (?, ?, ?, ?, ?, ?)",
-            arrayOf("XYZ001", "Laptop Gamer HP", 2500.0, 1, "Factura", "2026-07-20")
-        )
-        db.execSQL(
-            "INSERT INTO Ventas (codigo, nombre, precio, cantidad, tipo, fecha_de_venta) VALUES (?, ?, ?, ?, ?, ?)",
-            arrayOf("XYZ002", "Teclado Logitech", 70.0, 1, "Boleta", "2026-08-14")
-        )
-        // --- fin datos de prueba ---
-
         val listaVentas = mutableListOf<Venta>()
         val cursor = db.rawQuery("SELECT * FROM Ventas", null)
         while (cursor.moveToNext()) {

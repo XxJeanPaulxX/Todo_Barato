@@ -17,17 +17,12 @@ class DatabaseHelper(private val context: Context) :
 
     fun copyDatabase() {
         val dbFile = context.getDatabasePath(DB_NAME)
-
-        // TEMPORAL mientras desarrollas: borra la copia vieja para forzar
-        // que siempre tome la versión más reciente del .db en assets
-        if (dbFile.exists()) {
-            dbFile.delete()
-        }
-
-        dbFile.parentFile?.mkdirs()
-        context.assets.open("databases/$DB_NAME").use { input ->
-            FileOutputStream(dbFile).use { output ->
-                input.copyTo(output)
+        if (!dbFile.exists()) {
+            dbFile.parentFile?.mkdirs()
+            context.assets.open("databases/$DB_NAME").use { input ->
+                FileOutputStream(dbFile).use { output ->
+                    input.copyTo(output)
+                }
             }
         }
     }
