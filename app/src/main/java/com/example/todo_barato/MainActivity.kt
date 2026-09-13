@@ -1,8 +1,9 @@
 package com.example.todo_barato
 
 import android.os.Bundle
-import android.util.Log
 import androidx.appcompat.app.AppCompatActivity
+import androidx.recyclerview.widget.LinearLayoutManager
+import androidx.recyclerview.widget.RecyclerView
 
 class MainActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -12,20 +13,36 @@ class MainActivity : AppCompatActivity() {
         val dbHelper = DatabaseHelper(this)
         val db = dbHelper.getDatabase()
 
-        // --- insertar dato de prueba (solo por ahora) ---
+        // --- datos de prueba (temporal) ---
         db.execSQL(
             "INSERT INTO Ventas (codigo, nombre, precio, cantidad, tipo, fecha_de_venta) VALUES (?, ?, ?, ?, ?, ?)",
-            arrayOf("XYZ001", "Laptop Gamer HP", 2500, 1, "Factura", "2026-07-20")
+            arrayOf("XYZ001", "Laptop Gamer HP", 2500.0, 1, "Factura", "2026-07-20")
         )
+        db.execSQL(
+            "INSERT INTO Ventas (codigo, nombre, precio, cantidad, tipo, fecha_de_venta) VALUES (?, ?, ?, ?, ?, ?)",
+            arrayOf("XYZ002", "Teclado Logitech", 70.0, 1, "Boleta", "2026-08-14")
+        )
+        // --- fin datos de prueba ---
 
-        // --- prueba de conexión (consulta) ---
+        val listaVentas = mutableListOf<Venta>()
         val cursor = db.rawQuery("SELECT * FROM Ventas", null)
-        Log.d("DB_TEST", "Filas encontradas: ${cursor.count}")
         while (cursor.moveToNext()) {
-            val codigo = cursor.getString(cursor.getColumnIndexOrThrow("codigo"))
-            Log.d("DB_TEST", "Código: $codigo")
+            listaVentas.add(
+                Venta(
+                    codigo = cursor.getString(cursor.getColumnIndexOrThrow("codigo")),
+                    nombre = cursor.getString(cursor.getColumnIndexOrThrow("nombre")),
+                    precio = cursor.getDouble(cursor.getColumnIndexOrThrow("precio")),
+                    cantidad = cursor.getInt(cursor.getColumnIndexOrThrow("cantidad")),
+                    tipo = cursor.getString(cursor.getColumnIndexOrThrow("tipo")),
+                    fechaVenta = cursor.getString(cursor.getColumnIndexOrThrow("fecha_de_venta"))
+                )
+            )
         }
         cursor.close()
         db.close()
+
+        val recyclerView = findViewById<RecyclerView>(R.id.recyclerVentas)
+        recyclerView.layoutManager = LinearLayoutManager(this)
+        recyclerView.adapter = VentaAdapter(listaVentas)
     }
 }
