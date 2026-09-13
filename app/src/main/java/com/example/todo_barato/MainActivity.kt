@@ -1,15 +1,30 @@
 package com.example.todo_barato
 
+import android.content.Intent
 import android.os.Bundle
 import androidx.appcompat.app.AppCompatActivity
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
+import com.google.android.material.floatingactionbutton.FloatingActionButton
 
 class MainActivity : AppCompatActivity() {
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
 
+        val fab = findViewById<FloatingActionButton>(R.id.fabAgregar)
+        fab.setOnClickListener {
+            startActivity(Intent(this, AgregarVentaActivity::class.java))
+        }
+    }
+
+    override fun onResume() {
+        super.onResume()
+        cargarVentas()
+    }
+
+    private fun cargarVentas() {
         val dbHelper = DatabaseHelper(this)
         val db = dbHelper.getDatabase()
 
