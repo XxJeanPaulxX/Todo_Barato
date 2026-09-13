@@ -7,4 +7,8 @@ data class Venta(
     val cantidad: Int,
     val tipo: String,
     val fechaVenta: String
-)
+) {
+    val subtotal: Double get() = precio * cantidad
+    val igv: Double get() = subtotal * 0.18
+    val total: Double get() = subtotal + igv
+}
